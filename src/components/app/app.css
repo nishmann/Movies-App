@@ -1,0 +1,13 @@
+body {
+    background: #F7F7F7;
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 1010px;
+}
+
+.app {
+    padding: 20px 30px;
+    background: #fff;
+}

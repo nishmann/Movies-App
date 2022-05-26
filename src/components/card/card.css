@@ -1,0 +1,23 @@
+.movie {
+    width: 454px;
+    height: 281px;
+    margin-bottom: 25px !important;
+}
+
+.movie__photo img {
+    width: 183px;
+    height: 281px;
+}
+
+.movie__info {
+    padding: 12px 20px;
+}
+
+.movie__genres {
+    padding: 10px 0;
+}
+
+.ant-card-body {
+    display: flex;
+    padding: 0 !important;
+}
