@@ -1,7 +1,7 @@
 import './card.css';
 import 'antd/dist/antd.css';
 import React from 'react';
-import { Card, Image, Typography, Spin, Row } from 'antd';
+import { Card, Image, Typography, Spin, Row, Alert } from 'antd';
 import { format } from 'date-fns';
 
 import ApiServices from '../../apiServices';
@@ -16,14 +16,17 @@ class CardItem extends React.Component {
     this.state = {
       movie: [],
       loading: true,
+      error: false,
     };
     this.updateMovie = this.updateMovie();
   }
 
-  shortText(str, maxLength, dots) {
-    const normDesc = str.indexOf(' ', maxLength);
-    return normDesc === -1 ? str : str.substr(0, normDesc) + dots;
-  }
+  onError = () => {
+    this.setState({
+      error: true,
+      loading: false,
+    });
+  };
 
   spinner() {
     return (
@@ -34,12 +37,19 @@ class CardItem extends React.Component {
   }
 
   updateMovie() {
-    this.MovieServices.getMovies().then((data) => {
-      this.setState({
-        movie: data.results,
-        loading: false,
-      });
-    });
+    this.MovieServices.getMovies()
+      .then((data) => {
+        this.setState({
+          movie: data.results,
+          loading: false,
+        });
+      })
+      .catch(this.onError);
+  }
+
+  shortText(str, maxLength, dots) {
+    const normDesc = str.indexOf(' ', maxLength);
+    return normDesc === -1 ? str : str.substr(0, normDesc) + dots;
   }
 
   newCard(movie) {
@@ -67,9 +77,15 @@ class CardItem extends React.Component {
   }
 
   render() {
-    const { movie, loading } = this.state;
+    const { movie, loading, error } = this.state;
     if (loading) {
       return this.spinner();
+    }
+    if (error) {
+      return <Alert message="Something went wrong" type="error" />;
+    }
+    if (movie.length === 0) {
+      return <Alert message="Movie not found" type="error" />;
     }
     return <>{movie.map((item) => this.newCard(item))}</>;
   }
