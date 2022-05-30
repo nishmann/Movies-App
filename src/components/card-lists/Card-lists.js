@@ -3,14 +3,12 @@ import React from 'react';
 
 import CardItem from '../card';
 
-class CardLists extends React.Component {
-  render() {
-    return (
-      <div className="card-lists">
-        <CardItem />
-      </div>
-    );
-  }
+function CardLists({ inputValue, page }) {
+  return (
+    <div className="card-lists">
+      <CardItem inputValue={inputValue} page={page} />
+    </div>
+  );
 }
 
 export default CardLists;

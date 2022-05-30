@@ -1,24 +1,32 @@
 import './card.css';
 import 'antd/dist/antd.css';
 import React from 'react';
-import { Card, Image, Typography, Spin, Row, Alert } from 'antd';
+import { Card, Image, Typography, Alert } from 'antd';
 import { format } from 'date-fns';
 
-import ApiServices from '../../apiServices';
+import { shortText, spinner } from '../../utils/utils';
 
 const { Title, Text } = Typography;
-
 class CardItem extends React.Component {
-  MovieServices = new ApiServices();
-
   constructor() {
     super();
+    this.imgUrl = 'https://image.tmdb.org/t/p/w500';
     this.state = {
       movie: [],
       loading: true,
       error: false,
     };
-    this.updateMovie = this.updateMovie();
+  }
+
+  componentDidMount() {
+    this.updateMovie();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { inputValue, page } = this.props;
+    if (inputValue !== prevProps.inputValue || page !== prevProps.page) {
+      this.updateMovie();
+    }
   }
 
   onError = () => {
@@ -28,36 +36,27 @@ class CardItem extends React.Component {
     });
   };
 
-  spinner() {
-    return (
-      <Row justify="center">
-        <Spin size="large" className="spin" />
-      </Row>
-    );
-  }
-
   updateMovie() {
-    this.MovieServices.getMovies()
-      .then((data) => {
+    const { inputValue, page } = this.props;
+    return fetch(
+      `https://api.themoviedb.org/3/search/movie?api_key=05e95f40431909703294af8aa788da5d&query=${inputValue}&page=${page}`
+    )
+      .then((data) => data.json())
+      .then((res) => {
         this.setState({
-          movie: data.results,
+          movie: res.results,
           loading: false,
         });
       })
       .catch(this.onError);
   }
 
-  shortText(str, maxLength, dots) {
-    const normDesc = str.indexOf(' ', maxLength);
-    return normDesc === -1 ? str : str.substr(0, normDesc) + dots;
-  }
-
   newCard(movie) {
-    const image = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+    const image = `${this.imgUrl}${movie.poster_path}`;
     const idMovie = movie.id;
-    const title = this.shortText(movie.original_title, 23, '...');
-    const desc = this.shortText(movie.overview, 93, '...');
-    const date = format(new Date(movie.release_date), 'PP');
+    const title = shortText(movie.original_title, 23, '...');
+    const desc = shortText(movie.overview, 93, '...');
+    const date = movie.release_date ? format(new Date(movie.release_date), 'PP') : null;
     return (
       <Card className="movie" key={idMovie}>
         <div className="movie__photo">
@@ -79,7 +78,7 @@ class CardItem extends React.Component {
   render() {
     const { movie, loading, error } = this.state;
     if (loading) {
-      return this.spinner();
+      return spinner();
     }
     if (error) {
       return <Alert message="Something went wrong" type="error" />;
