@@ -1,7 +1,7 @@
 import './card-lists.css';
 import React from 'react';
 
-import CardItem from '../card';
+import CardItem from '../Card';
 
 function CardLists({ inputValue, page }) {
   return (

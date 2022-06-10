@@ -3,8 +3,8 @@ import './app.css';
 import { Pagination } from 'antd';
 import debounce from 'lodash.debounce';
 
-import CardLists from '../card-lists';
-import Search from '../search';
+import CardLists from '../CardLists';
+import Search from '../Search';
 
 class App extends React.Component {
   constructor() {
