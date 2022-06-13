@@ -4,13 +4,29 @@
     margin-bottom: 25px !important;
 }
 
+.movie__head {
+    display: flex;
+    justify-content: space-between;
+}
+
+.movie__grade {
+    text-align: center;
+    width: 30px;
+    height: 30px;
+}
+
+.movie__grade.grade-border {
+    border: 2px solid #E9D100;
+    border-radius: 50%;
+}
+
 .movie__photo img {
     width: 183px;
     height: 281px;
 }
 
 .movie__info {
-    padding: 12px 20px;
+    padding: 12px 10px;
 }
 
 .movie__genres {

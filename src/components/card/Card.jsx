@@ -3,10 +3,12 @@ import 'antd/dist/antd.css';
 import React from 'react';
 import { Card, Image, Typography, Alert } from 'antd';
 import { format } from 'date-fns';
+import RateItem from '../Rate';
 
 import { shortText, spinner } from '../../utils/utils';
 
 const { Title, Text } = Typography;
+
 class CardItem extends React.Component {
   constructor() {
     super();
@@ -38,8 +40,9 @@ class CardItem extends React.Component {
 
   updateMovie() {
     const { inputValue, page } = this.props;
+    const defaultValue = inputValue === '' ? 'return' : inputValue;
     return fetch(
-      `https://api.themoviedb.org/3/search/movie?api_key=05e95f40431909703294af8aa788da5d&query=${inputValue}&page=${page}`
+      `https://api.themoviedb.org/3/search/movie?api_key=05e95f40431909703294af8aa788da5d&query=${defaultValue}&page=${page}`
     )
       .then((data) => data.json())
       .then((res) => {
@@ -58,18 +61,22 @@ class CardItem extends React.Component {
     const desc = shortText(movie.overview, 93, '...');
     const date = movie.release_date ? format(new Date(movie.release_date), 'PP') : null;
     return (
-      <Card className="movie" key={idMovie}>
+      <Card className="movie" key={idMovie} hoverable>
         <div className="movie__photo">
           <Image src={image} alt={title} />
         </div>
         <div className="movie__info">
-          <Title level={4}>{title}</Title>
+          <div className="movie__head">
+            <Title level={5}>{title}</Title>
+            <div className="movie__grade grade-border">6.6</div>
+          </div>
           <Text type="secondary">{date}</Text>
           <div className="movie__genres">
             <Text keyboard>Drama</Text>
             <Text keyboard>Action</Text>
           </div>
           <Text>{desc}</Text>
+          <RateItem />
         </div>
       </Card>
     );
