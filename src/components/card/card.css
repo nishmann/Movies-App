@@ -13,11 +13,23 @@
     text-align: center;
     width: 30px;
     height: 30px;
+    border-radius: 50%;
 }
 
-.movie__grade.grade-border {
+.movie__grade.movie__grade_border_red {
+    border: 2px solid #E90000;
+}
+
+.movie__grade.movie__grade_border_orange {
+    border: 2px solid #E97E00;
+}
+
+.movie__grade.movie__grade_border_yellow {
     border: 2px solid #E9D100;
-    border-radius: 50%;
+}
+
+.movie__grade.movie__grade_border_green {
+    border: 2px solid #66E900;
 }
 
 .movie__photo img {

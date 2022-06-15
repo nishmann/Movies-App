@@ -1,17 +1,17 @@
 import './card.css';
 import 'antd/dist/antd.css';
+import { format } from 'date-fns';
 import React from 'react';
 import { Card, Image, Typography, Alert } from 'antd';
-import { format } from 'date-fns';
-import RateItem from '../Rate';
 
+import RateItem from '../Rate';
 import { shortText, spinner } from '../../utils/utils';
 
 const { Title, Text } = Typography;
 
 class CardItem extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.imgUrl = 'https://image.tmdb.org/t/p/w500';
     this.state = {
       movie: [],
@@ -60,6 +60,21 @@ class CardItem extends React.Component {
     const title = shortText(movie.original_title, 23, '...');
     const desc = shortText(movie.overview, 93, '...');
     const date = movie.release_date ? format(new Date(movie.release_date), 'PP') : null;
+
+    const generateBorderColor = () => {
+      let classNames = '';
+      if (movie.vote_average < 3) {
+        classNames = ' movie__grade_border_red';
+      } else if (movie.vote_average > 3 && movie.vote_average < 5) {
+        classNames = ' movie__grade_border_orange';
+      } else if (movie.vote_average > 5 && movie.vote_average < 7) {
+        classNames = ' movie__grade_border_yellow';
+      } else if (movie.vote_average > 7) {
+        classNames = ' movie__grade_border_green';
+      }
+      return classNames;
+    };
+
     return (
       <Card className="movie" key={idMovie} hoverable>
         <div className="movie__photo">
@@ -68,7 +83,7 @@ class CardItem extends React.Component {
         <div className="movie__info">
           <div className="movie__head">
             <Title level={5}>{title}</Title>
-            <div className="movie__grade grade-border">6.6</div>
+            <div className={`movie__grade ${generateBorderColor()}`}>{movie.vote_average}</div>
           </div>
           <Text type="secondary">{date}</Text>
           <div className="movie__genres">
