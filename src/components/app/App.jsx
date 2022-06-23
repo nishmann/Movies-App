@@ -1,14 +1,18 @@
-import React from 'react';
 import './app.css';
-import { Pagination } from 'antd';
+
+import React from 'react';
+import { Pagination, Tabs } from 'antd';
 import debounce from 'lodash.debounce';
 
 import CardLists from '../CardLists';
 import Search from '../Search';
+import Rated from '../Rated';
+
+const { TabPane } = Tabs;
 
 class App extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       inputValue: 'return',
       page: 1,
@@ -32,9 +36,16 @@ class App extends React.Component {
     return (
       <div className="container">
         <div className="app">
-          <Search handleSearch={debounce(this.handleSearch, 900)} />
-          <CardLists inputValue={inputValue} page={page} />
-          <Pagination onChange={(num) => this.changePage(num)} defaultCurrent={1} total={50} />
+          <Tabs>
+            <TabPane tab="Search" key="1">
+              <Search handleSearch={debounce(this.handleSearch, 900)} />
+              <CardLists inputValue={inputValue} page={page} />
+              <Pagination onChange={(num) => this.changePage(num)} defaultCurrent={1} total={50} />
+            </TabPane>
+            <TabPane tab="Rated" key="2">
+              <Rated />
+            </TabPane>
+          </Tabs>
         </div>
       </div>
     );

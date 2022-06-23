@@ -1,115 +1,56 @@
 import './card.css';
 import 'antd/dist/antd.css';
+
 import { format } from 'date-fns';
 import React from 'react';
-import { Card, Image, Typography, Alert } from 'antd';
+import { Card, Image, Typography, Rate } from 'antd';
 
-import RateItem from '../Rate';
-import { shortText, spinner } from '../../utils/utils';
+import ApiServices from '../../services/apiServices';
+import { shortText } from '../../utils/utils';
 
 const { Title, Text } = Typography;
 
-class CardItem extends React.Component {
-  constructor(props) {
-    super(props);
-    this.imgUrl = 'https://image.tmdb.org/t/p/w500';
-    this.state = {
-      movie: [],
-      loading: true,
-      error: false,
-    };
-  }
+const CardItem = ({ card }) => {
+  const movieApi = new ApiServices();
+  const image = `https://image.tmdb.org/t/p/w500${card.poster_path}`;
+  const idMovie = card.id;
+  const title = shortText(card.original_title, 23, '...');
+  const desc = shortText(card.overview, 93, '...');
+  const date = card.release_date ? format(new Date(card.release_date), 'PP') : null;
 
-  componentDidMount() {
-    this.updateMovie();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { inputValue, page } = this.props;
-    if (inputValue !== prevProps.inputValue || page !== prevProps.page) {
-      this.updateMovie();
+  const generateBorderColor = () => {
+    let classNames = '';
+    if (card.vote_average < 3) {
+      classNames = ' movie__grade_border_red';
+    } else if (card.vote_average > 3 && card.vote_average < 5) {
+      classNames = ' movie__grade_border_orange';
+    } else if (card.vote_average > 5 && card.vote_average < 7) {
+      classNames = ' movie__grade_border_yellow';
+    } else if (card.vote_average > 7) {
+      classNames = ' movie__grade_border_green';
     }
-  }
-
-  onError = () => {
-    this.setState({
-      error: true,
-      loading: false,
-    });
+    return classNames;
   };
 
-  updateMovie() {
-    const { inputValue, page } = this.props;
-    const defaultValue = inputValue === '' ? 'return' : inputValue;
-    return fetch(
-      `https://api.themoviedb.org/3/search/movie?api_key=05e95f40431909703294af8aa788da5d&query=${defaultValue}&page=${page}`
-    )
-      .then((data) => data.json())
-      .then((res) => {
-        this.setState({
-          movie: res.results,
-          loading: false,
-        });
-      })
-      .catch(this.onError);
-  }
-
-  newCard(movie) {
-    const image = `${this.imgUrl}${movie.poster_path}`;
-    const idMovie = movie.id;
-    const title = shortText(movie.original_title, 23, '...');
-    const desc = shortText(movie.overview, 93, '...');
-    const date = movie.release_date ? format(new Date(movie.release_date), 'PP') : null;
-
-    const generateBorderColor = () => {
-      let classNames = '';
-      if (movie.vote_average < 3) {
-        classNames = ' movie__grade_border_red';
-      } else if (movie.vote_average > 3 && movie.vote_average < 5) {
-        classNames = ' movie__grade_border_orange';
-      } else if (movie.vote_average > 5 && movie.vote_average < 7) {
-        classNames = ' movie__grade_border_yellow';
-      } else if (movie.vote_average > 7) {
-        classNames = ' movie__grade_border_green';
-      }
-      return classNames;
-    };
-
-    return (
-      <Card className="movie" key={idMovie} hoverable>
-        <div className="movie__photo">
-          <Image src={image} alt={title} />
+  return (
+    <Card className="movie" key={idMovie} hoverable>
+      <div className="movie__photo">
+        <Image src={image} alt={title} />
+      </div>
+      <div className="movie__info">
+        <div className="movie__head">
+          <Title level={5}>{title}</Title>
+          <div className={`movie__grade ${generateBorderColor()}`}>{card.vote_average}</div>
         </div>
-        <div className="movie__info">
-          <div className="movie__head">
-            <Title level={5}>{title}</Title>
-            <div className={`movie__grade ${generateBorderColor()}`}>{movie.vote_average}</div>
-          </div>
-          <Text type="secondary">{date}</Text>
-          <div className="movie__genres">
-            <Text keyboard>Drama</Text>
-            <Text keyboard>Action</Text>
-          </div>
-          <Text>{desc}</Text>
-          <RateItem />
+        <Text type="secondary">{date}</Text>
+        <div className="movie__genres">
+          <Text keyboard>Action</Text>
         </div>
-      </Card>
-    );
-  }
-
-  render() {
-    const { movie, loading, error } = this.state;
-    if (loading) {
-      return spinner();
-    }
-    if (error) {
-      return <Alert message="Something went wrong" type="error" />;
-    }
-    if (movie.length === 0) {
-      return <Alert message="Movie not found" type="error" />;
-    }
-    return <>{movie.map((item) => this.newCard(item))}</>;
-  }
-}
+        <Text>{desc}</Text>
+        <Rate allowHalf defaultValue={card.rating} count={10} onChange={(star) => movieApi.rateMovie(star, idMovie)} />
+      </div>
+    </Card>
+  );
+};
 
 export default CardItem;

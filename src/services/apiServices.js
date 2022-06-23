@@ -1,8 +1,10 @@
 class ApiServices {
+  baseUrl = 'https://api.themoviedb.org/3/';
+
   apiKey = 'api_key=05e95f40431909703294af8aa788da5d';
 
-  getMovies = async () => {
-    const res = await fetch(`https://api.themoviedb.org/3/movie/popular?${this.apiKey}`);
+  getResource = async (url, option) => {
+    const res = await fetch(`${this.baseUrl}${url}`, option);
     if (!res.ok) {
       throw new Error(`Could not fetch ${res.url} received ${res.status}`);
     }
@@ -10,15 +12,29 @@ class ApiServices {
     return body;
   };
 
-  searchMovies = async (searchtext, page) => {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/search/movie?${this.apiKey}&query=${searchtext}&page=${page}`
+  searchMovies = async (searchText, page) => {
+    return this.getResource(`search/movie?${this.apiKey}&query=${searchText}&page=${page}`);
+  };
+
+  getGenres = async () => this.getResource(`genre/movie/list?${this.apiKey}`);
+
+  getSessionGuest = async () => this.getResource(`authentication/guest_session/new?${this.apiKey}`);
+
+  rateMovie = async (rate, id) => {
+    return this.getResource(
+      `movie/${id}/rating?${this.apiKey}&guest_session_id=${localStorage.getItem('guest_session_id')}`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ value: rate }),
+        headers: {
+          'Content-type': 'application/json, charset=UTF-8',
+        },
+      }
     );
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${res.url} received ${res.status}`);
-    }
-    const body = await res.json();
-    return body;
+  };
+
+  getRatedMovie = () => {
+    return this.getResource(`guest_session/${localStorage.getItem('guest_session_id')}/rated/movies?${this.apiKey}`);
   };
 }
 
