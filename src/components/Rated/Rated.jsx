@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Alert } from 'antd';
+import { Alert, Col, Row } from 'antd';
 
 import ApiServices from '../../services/apiServices';
 import CardItem from '../Card';
@@ -59,11 +59,13 @@ class Rated extends Component {
       return <Alert message="Movie not found" type="error" />;
     }
     return (
-      <>
+      <Row justify="space-between" gutter={[8, 8]}>
         {Object.values(cards).map((card) => (
-          <CardItem key={card.id} card={card} />
+          <Col>
+            <CardItem key={card.id} card={card} />
+          </Col>
         ))}
-      </>
+      </Row>
     );
   }
 }

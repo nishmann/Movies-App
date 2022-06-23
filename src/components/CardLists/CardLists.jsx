@@ -1,6 +1,5 @@
-import './cardLists.css';
 import React, { Component } from 'react';
-import { Alert } from 'antd';
+import { Alert, Col, Row } from 'antd';
 
 import CardItem from '../Card';
 import { spinner } from '../../utils/utils';
@@ -64,11 +63,13 @@ class CardLists extends Component {
       return <Alert message="Movie not found" type="error" />;
     }
     return (
-      <div className="card-lists">
+      <Row justify="space-between" gutter={[8, 8]}>
         {movies.map((movie) => (
-          <CardItem key={movie.id} inputValue={inputValue} page={page} card={movie} />
+          <Col>
+            <CardItem key={movie.id} inputValue={inputValue} page={page} card={movie} />
+          </Col>
         ))}
-      </div>
+      </Row>
     );
   }
 }

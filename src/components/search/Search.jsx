@@ -1,11 +1,10 @@
-import './search.css';
-import { Input } from 'antd';
+import { Input, Row } from 'antd';
 
 const Search = ({ handleSearch }) => {
   return (
-    <div className="search-panel">
+    <Row>
       <Input placeholder="Type to search..." onChange={(e) => handleSearch(e)} />
-    </div>
+    </Row>
   );
 };
 
