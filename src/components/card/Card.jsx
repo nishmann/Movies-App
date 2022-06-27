@@ -1,12 +1,13 @@
-import './card.css';
 import 'antd/dist/antd.css';
+import './card.css';
 
 import { format } from 'date-fns';
 import React from 'react';
-import { Card, Image, Typography, Rate } from 'antd';
+import { Card, Image, Typography, Rate, Tag } from 'antd';
 
 import ApiServices from '../../services/apiServices';
 import { shortText } from '../../utils/utils';
+import { Consumer } from '../../context';
 
 const { Title, Text } = Typography;
 
@@ -33,23 +34,42 @@ const CardItem = ({ card }) => {
   };
 
   return (
-    <Card className="movie" key={idMovie} hoverable>
-      <div className="movie__photo">
-        <Image src={image} alt={title} />
-      </div>
-      <div className="movie__info">
-        <div className="movie__head">
-          <Title level={5}>{title}</Title>
-          <div className={`movie__grade ${generateBorderColor()}`}>{card.vote_average}</div>
-        </div>
-        <Text type="secondary">{date}</Text>
-        <div className="movie__genres">
-          <Text keyboard>Action</Text>
-        </div>
-        <Text>{desc}</Text>
-        <Rate allowHalf defaultValue={card.rating} count={10} onChange={(star) => movieApi.rateMovie(star, idMovie)} />
-      </div>
-    </Card>
+    <Consumer>
+      {(genres) => {
+        return (
+          <Card hoverable style={{ width: 451 }}>
+            <div className="movie__photo">
+              <Image src={image} alt={title} />
+            </div>
+            <div className="movie__info">
+              <div className="movie__head">
+                <Title level={5}>{title}</Title>
+                <div className={`movie__grade ${generateBorderColor()}`}>{card.vote_average}</div>
+              </div>
+              <Text type="secondary">{date}</Text>
+              <div className="movie__genres">
+                {card.genre_ids.map((id) => {
+                  const genre = genres.find((el) => el.id === id);
+                  return (
+                    <Tag key={genre.id} keyboard>
+                      {genre.name}
+                    </Tag>
+                  );
+                })}
+              </div>
+              <Text>{desc}</Text>
+              <Rate
+                className="movie__rate"
+                allowHalf
+                defaultValue={card.rating}
+                count={10}
+                onChange={(star) => movieApi.rateMovie(star, idMovie)}
+              />
+            </div>
+          </Card>
+        );
+      }}
+    </Consumer>
   );
 };
 

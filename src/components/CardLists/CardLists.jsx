@@ -63,10 +63,10 @@ class CardLists extends Component {
       return <Alert message="Movie not found" type="error" />;
     }
     return (
-      <Row justify="space-between" gutter={[8, 8]}>
+      <Row justify="center" gutter={[32, 32]}>
         {movies.map((movie) => (
-          <Col>
-            <CardItem key={movie.id} inputValue={inputValue} page={page} card={movie} />
+          <Col key={movie.id}>
+            <CardItem inputValue={inputValue} page={page} card={movie} />
           </Col>
         ))}
       </Row>

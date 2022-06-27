@@ -47,5 +47,13 @@
 
 .ant-card-body {
     display: flex;
-    padding: 0 !important;
+    padding: 0;
+}
+
+.movie__rate {
+    margin-top: 10px;
+}
+
+.movie__rate li:not(:last-child){
+    margin-right: 5px;
 }

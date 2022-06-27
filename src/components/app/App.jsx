@@ -5,16 +5,27 @@ import debounce from 'lodash.debounce';
 import CardLists from '../CardLists';
 import Search from '../Search';
 import Rated from '../Rated';
+import { Provider } from '../../context';
+import ApiServices from '../../services/apiServices';
 
 const { TabPane } = Tabs;
 
 class App extends React.Component {
+  movieApi = new ApiServices();
+
   constructor(props) {
     super(props);
     this.state = {
       inputValue: 'return',
       page: 1,
+      genres: [],
     };
+  }
+
+  componentDidMount() {
+    this.movieApi.getGenres().then(({ genres }) => {
+      this.setState({ genres });
+    });
   }
 
   handleSearch = (event) => {
@@ -32,12 +43,12 @@ class App extends React.Component {
   render() {
     const md = { span: 24 };
     const lg = { span: 18 };
-    const { inputValue, page } = this.state;
+    const { inputValue, page, genres } = this.state;
     return (
-      <div>
+      <Provider value={genres}>
         <Row justify="center">
           <Col md={md} lg={lg}>
-            <Tabs>
+            <Tabs centered>
               <TabPane tab="Search" key="1">
                 <Space direction="vertical">
                   <Search handleSearch={debounce(this.handleSearch, 900)} />
@@ -53,7 +64,7 @@ class App extends React.Component {
             </Tabs>
           </Col>
         </Row>
-      </div>
+      </Provider>
     );
   }
 }

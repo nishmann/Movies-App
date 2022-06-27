@@ -59,10 +59,10 @@ class Rated extends Component {
       return <Alert message="Movie not found" type="error" />;
     }
     return (
-      <Row justify="space-between" gutter={[8, 8]}>
+      <Row justify="center" gutter={[8, 8]}>
         {Object.values(cards).map((card) => (
-          <Col>
-            <CardItem key={card.id} card={card} />
+          <Col key={card.id}>
+            <CardItem card={card} />
           </Col>
         ))}
       </Row>
