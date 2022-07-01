@@ -1,12 +1,12 @@
 import { Component } from 'react';
-import { Alert, Col, Row } from 'antd';
+import { Alert } from 'antd';
 
-import ApiServices from '../../services/apiServices';
-import CardItem from '../Card';
-import { spinner } from '../../utils/utils';
+import MovieServices from '../../services/movieServices';
+import MoviesList from '../MoviesList';
+import Spinner from '../Spinner';
 
-class Rated extends Component {
-  ratedMovie = new ApiServices();
+class RatedMoviesPage extends Component {
+  ratedMovie = new MovieServices();
 
   constructor(props) {
     super(props);
@@ -50,24 +50,16 @@ class Rated extends Component {
   render() {
     const { cards, loading, error } = this.state;
     if (loading) {
-      return spinner();
+      return <Spinner />;
     }
-    if (error) {
+    if (error && !navigator.onLine) {
       return <Alert message="Something went wrong" type="error" />;
     }
     if (cards.length === 0) {
       return <Alert message="Movie not found" type="error" />;
     }
-    return (
-      <Row justify="center" gutter={[8, 8]}>
-        {Object.values(cards).map((card) => (
-          <Col key={card.id}>
-            <CardItem card={card} />
-          </Col>
-        ))}
-      </Row>
-    );
+    return <MoviesList data={cards} />;
   }
 }
 
-export default Rated;
+export default RatedMoviesPage;

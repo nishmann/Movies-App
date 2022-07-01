@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Alert, Col, Row } from 'antd';
+import { Alert } from 'antd';
 
-import CardItem from '../Card';
-import { spinner } from '../../utils/utils';
-import ApiServices from '../../services/apiServices';
+import MovieServices from '../../services/movieServices';
+import MoviesList from '../MoviesList';
+import Spinner from '../Spinner';
 
-class CardLists extends Component {
-  movieApi = new ApiServices();
+class MoviesPage extends Component {
+  movieApi = new MovieServices();
 
   constructor(props) {
     super(props);
@@ -19,7 +19,6 @@ class CardLists extends Component {
 
   componentDidMount() {
     this.getMovie();
-    this.movieApi.getSessionGuest().then((result) => localStorage.setItem('guest_session_id', result.guest_session_id));
   }
 
   componentDidUpdate(prevProps) {
@@ -52,26 +51,17 @@ class CardLists extends Component {
 
   render() {
     const { loading, error, movies } = this.state;
-    const { inputValue, page } = this.props;
     if (loading) {
-      return spinner();
+      return <Spinner />;
     }
-    if (error) {
+    if (error && !navigator.onLine) {
       return <Alert message="Something went wrong" type="error" />;
     }
     if (movies.length === 0) {
       return <Alert message="Movie not found" type="error" />;
     }
-    return (
-      <Row justify="center" gutter={[32, 32]}>
-        {movies.map((movie) => (
-          <Col key={movie.id}>
-            <CardItem inputValue={inputValue} page={page} card={movie} />
-          </Col>
-        ))}
-      </Row>
-    );
+    return <MoviesList data={movies} />;
   }
 }
 
-export default CardLists;
+export default MoviesPage;

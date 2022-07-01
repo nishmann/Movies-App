@@ -1,4 +1,4 @@
-class ApiServices {
+class MovieServices {
   baseUrl = 'https://api.themoviedb.org/3/';
 
   apiKey = 'api_key=05e95f40431909703294af8aa788da5d';
@@ -38,4 +38,4 @@ class ApiServices {
   };
 }
 
-export default ApiServices;
+export default MovieServices;

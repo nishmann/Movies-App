@@ -37,6 +37,7 @@
   "parser": "@babel/eslint-parser",
   "rules": {
     "react/prefer-stateless-function": "off",
+    "camelcase": "off",
     "no-plusplus": 0,
     "indent": [
       "error",

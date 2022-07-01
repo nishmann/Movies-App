@@ -2,16 +2,16 @@ import React from 'react';
 import { Col, Pagination, Row, Space, Tabs } from 'antd';
 import debounce from 'lodash.debounce';
 
-import CardLists from '../CardLists';
+import CardLists from '../MoviesPage';
 import Search from '../Search';
-import Rated from '../Rated';
+import Rated from '../RatedMoviesPage';
 import { Provider } from '../../context';
-import ApiServices from '../../services/apiServices';
+import MovieServices from '../../services/movieServices';
 
 const { TabPane } = Tabs;
 
 class App extends React.Component {
-  movieApi = new ApiServices();
+  movieApi = new MovieServices();
 
   constructor(props) {
     super(props);
@@ -26,6 +26,7 @@ class App extends React.Component {
     this.movieApi.getGenres().then(({ genres }) => {
       this.setState({ genres });
     });
+    this.movieApi.getSessionGuest().then((result) => localStorage.setItem('guest_session_id', result.guest_session_id));
   }
 
   handleSearch = (event) => {
