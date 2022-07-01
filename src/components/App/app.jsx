@@ -3,7 +3,7 @@ import { Col, Pagination, Row, Space, Tabs } from 'antd';
 import debounce from 'lodash.debounce';
 
 import CardLists from '../MoviesPage';
-import Search from '../Search';
+import Search from '../search';
 import Rated from '../RatedMoviesPage';
 import { Provider } from '../../context';
 import MovieServices from '../../services/movieServices';
